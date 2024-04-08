@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -55,10 +54,12 @@ class _QRViewExampleState extends State<QRViewExample> {
   @override
   void initState() {
     super.initState();
+    debugPrint("SHubham babu ko kuch doubt hhhhhh 11  1  1!!!!");
   }
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("Hellloooooo");
     return Scaffold(
       body: Column(
         children: <Widget>[
@@ -172,44 +173,37 @@ class _QRViewExampleState extends State<QRViewExample> {
           borderLength: 30,
           borderWidth: 10,
           cutOutSize: scanArea),
-
     );
   }
 
   void _onQRViewCreated(QRViewController controller) async {
-  setState(() {
-    this.controller = controller;
-  });
-  bool isFunctionCalled = false;
-  
-  controller.scannedDataStream.listen((scanData) async {
     setState(() {
-      result = scanData;
+      this.controller = controller;
     });
-    if (result != null && !isFunctionCalled) {
-      isFunctionCalled = true;
+    bool isFunctionCalled = false;
+   
+    controller.scannedDataStream.listen((scanData) async {
+      setState(() {
+        result = scanData;
+      });
+      if (result != null && !isFunctionCalled) {
+        isFunctionCalled = true;
 
-      // Call the fetchQrData function to fetch data from the API
-      await fetchQrData();
+        // Call the fetchQrData function to fetch data from the API
+        await fetchQrData();
 
-      // After fetching data from the API, navigate to the next page
-    var nextPage= Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) {
-          return const ResponsceOfQrCodeApi();
-        },
-        
-      ));
-       if (nextPage == null) {
-        isFunctionCalled = false;
-        
+        // After fetching data from the API, navigate to the next page
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) {
+            return const ResponsceOfQrCodeApi();
+          },
+        ));
+      
+        // Cancel the subscription to stop further scans
+        // scanSubscription.cancel();
       }
-      // Cancel the subscription to stop further scans
-      // scanSubscription.cancel();
-    }
-  });
-}
-
-
+    });
+  }
 
   @override
   void dispose() {
@@ -280,7 +274,6 @@ Future<void> fetchQrData() async {
     );
     print("responsce of API ${res}");
     print("responsce of API ${res.body}");
-  
   } catch (e) {
     debugPrint(
       "Error on Fetching Qrdata",
